@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pytest)",
+      "Bash(PIPENV_IGNORE_VIRTUALENVS=1 pipenv --venv)"
+    ]
+  }
+}
