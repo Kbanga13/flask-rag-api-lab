@@ -7,25 +7,55 @@ FALLBACK_MESSAGE = (
 
 def format_sources(context_chunks):
     """Return source metadata for retrieved context chunks."""
-    # TODO: Return unique source dictionaries.
-    # TODO: Include id, title, category, section, and chunk_id.
-    # TODO: Do not include full text or distance values in source entries.
-    raise NotImplementedError("Implement format_sources().")
+    if not context_chunks:
+        return []
+
+    sources = []
+    seen = set()
+    for chunk in context_chunks:
+        if not isinstance(chunk, dict):
+            continue
+
+        source_id = chunk.get("source_id")
+        chunk_id = chunk.get("id")
+        key = (source_id, chunk_id)
+        if key in seen:
+            continue
+        seen.add(key)
+
+        sources.append(
+            {
+                "id": source_id,
+                "title": chunk.get("title"),
+                "category": chunk.get("category"),
+                "section": chunk.get("section"),
+                "chunk_id": chunk_id,
+            }
+        )
+
+    return sources
 
 
 def format_success_response(answer, sources):
     """Return the successful RAG API response body."""
-    # TODO: Return {"answer": cleaned_answer, "sources": sources_list}.
-    raise NotImplementedError("Implement format_success_response().")
+    cleaned_answer = answer.strip() if isinstance(answer, str) else ""
+    return {
+        "answer": cleaned_answer,
+        "sources": list(sources) if sources else [],
+    }
 
 
 def format_fallback_response(question=None):
     """Return a safe response when there is not enough approved context."""
-    # TODO: Return FALLBACK_MESSAGE with an empty sources list.
-    raise NotImplementedError("Implement format_fallback_response().")
+    return {
+        "answer": FALLBACK_MESSAGE,
+        "sources": [],
+    }
 
 
 def format_error_response(error, message):
     """Return a standard error response body."""
-    # TODO: Return {"error": error, "message": message}.
-    raise NotImplementedError("Implement format_error_response().")
+    return {
+        "error": error,
+        "message": message,
+    }
